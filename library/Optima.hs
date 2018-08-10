@@ -10,8 +10,8 @@ module Optima
   value,
   -- * Value
   Value,
-  explicitParser,
-  implicitParser,
+  explicitlyParsed,
+  implicitlyParsed,
   -- * Default
   Default,
   explicitlyRepresented,
@@ -136,14 +136,14 @@ value description def format (Value attoparsecParser) =
 {-|
 Lift an Attoparsec parser into value parser.
 -}
-explicitParser :: Attoparsec.Parser a -> Value a
-explicitParser = Value
+explicitlyParsed :: Attoparsec.Parser a -> Value a
+explicitlyParsed = Value
 
 {-|
 Lift an implicit lenient Attoparsec parser into value parser.
 -}
-implicitParser :: Attoparsec.LenientParser a => Value a
-implicitParser = Value Attoparsec.lenientParser
+implicitlyParsed :: Attoparsec.LenientParser a => Value a
+implicitlyParsed = Value Attoparsec.lenientParser
 
 
 -- ** Default
