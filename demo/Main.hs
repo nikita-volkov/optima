@@ -13,20 +13,17 @@ main = parseOpts >>= print where
           (Optima.value
             "Description of A"
             (Optima.showable True)
-            (Optima.explicitParser
-              Optima.unformatted
-              Attoparsec.bool)))
+            Optima.unformatted
+            (Optima.explicitParser Attoparsec.bool)))
         (Optima.param (Just 'b') "arg-b"
           (Optima.value
             "Description of B"
             Optima.defaultless
-            (Optima.explicitParser
-              Optima.unformatted
-              Attoparsec.text)))
+            Optima.unformatted
+            (Optima.explicitParser Attoparsec.text)))
         (Optima.param Nothing "arg-c"
           (Optima.value
             ""
             Optima.defaultless
-            (Optima.explicitParser
-              Optima.unformatted
-              Attoparsec.utf8Bytes))))
+            Optima.unformatted
+            (Optima.explicitParser Attoparsec.utf8Bytes))))

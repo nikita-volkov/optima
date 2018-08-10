@@ -51,7 +51,7 @@ newtype Param a = Param (Maybe Char -> Text -> Optparse.Parser a)
 {-|
 Parameter value parser.
 -}
-data Value a = Value (ValueFormat a) (Attoparsec.Parser a)
+newtype Value a = Value (Attoparsec.Parser a)
 
 {-|
 Default value with its textual representation.
@@ -74,6 +74,11 @@ deriving instance Alternative Params
 deriving instance Functor Param
 
 deriving instance Functor Value
+deriving instance Applicative Value
+deriving instance Alternative Value
+deriving instance Monad Value
+deriving instance MonadPlus Value
+deriving instance MonadFail Value
 
 deriving instance Functor Default
 
@@ -113,8 +118,8 @@ param shortName longName (Param parser) = Params (parser shortName longName)
 {-|
 Create a single parameter parser from a value parser and meta information.
 -}
-value :: Text {-^ Description. Can be empty -} -> Default a {-^ Default value -} -> Value a -> Param a
-value description def (Value format attoparsecParser) =
+value :: Text {-^ Description. Can be empty -} -> Default a {-^ Default value -} -> ValueFormat a {-^ Value format -} -> Value a -> Param a
+value description def format (Value attoparsecParser) =
   Param (\ shortName longName -> Optparse.option readM (mods shortName longName))
   where
     readM = Optparse.eitherReader (Attoparsec.parseOnly attoparsecParser . Text.pack)
@@ -131,14 +136,14 @@ value description def (Value format attoparsecParser) =
 {-|
 Lift an Attoparsec parser into value parser.
 -}
-explicitParser :: ValueFormat a -> Attoparsec.Parser a -> Value a
+explicitParser :: Attoparsec.Parser a -> Value a
 explicitParser = Value
 
 {-|
 Lift an implicit lenient Attoparsec parser into value parser.
 -}
-implicitParser :: Attoparsec.LenientParser a => ValueFormat a -> Value a
-implicitParser format = Value format Attoparsec.lenientParser
+implicitParser :: Attoparsec.LenientParser a => Value a
+implicitParser = Value Attoparsec.lenientParser
 
 
 -- ** Default
