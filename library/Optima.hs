@@ -19,7 +19,7 @@ module Optima
   defaultless,
   -- * ValueFormat
   ValueFormat,
-  enum,
+  formattedByEnum,
   unformatted,
 )
 where
@@ -179,8 +179,8 @@ defaultless = UnspecifiedDefault
 {-|
 Derive value format specification from the Enum instance.
 -}
-enum :: (Bounded a, Enum a, Show a) => ValueFormat a
-enum = let
+formattedByEnum :: (Bounded a, Enum a, Show a) => ValueFormat a
+formattedByEnum = let
   values = enumFromTo minBound (asTypeOf maxBound (descriptionToA description))
   descriptionToA = undefined :: ValueFormat a -> a
   description = EnumValueFormat (fmap (TextBuilder.string . show) values)
