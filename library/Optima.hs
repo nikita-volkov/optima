@@ -49,6 +49,11 @@ Includes the description of the parameter.
 newtype Param a = Param (Maybe Char -> Text -> Optparse.Parser a)
 
 {-|
+Parameter product, which gets resolved by prefixing the names
+-}
+newtype ProductParam a = ProductParam (Text -> Optparse.Parser a)
+
+{-|
 Parameter value parser.
 -}
 newtype Value a = Value (Attoparsec.Parser a)
