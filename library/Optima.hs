@@ -26,6 +26,7 @@ module Optima
   -- * ValueFormat
   ValueFormat,
   formattedByEnum,
+  formattedByEnumUsingShow,
   unformatted,
 )
 where
@@ -234,13 +235,27 @@ defaultless = UnspecifiedDefault
 -------------------------
 
 {-|
-Derive value format specification from the Enum instance.
+Derive value format specification from the Enum instance and
+explicit mapping of values to their representations.
 -}
-formattedByEnum :: (Bounded a, Enum a, Show a) => ValueFormat a
-formattedByEnum = let
+formattedByEnum :: (Bounded a, Enum a) => (a -> Text) -> ValueFormat a
+formattedByEnum valueRepresentation = formattedByEnumUsingBuilderMapping (TextBuilder.text . valueRepresentation)
+
+{-|
+Derive value format specification from the Enum and Show instances.
+-}
+formattedByEnumUsingShow :: (Bounded a, Enum a, Show a) => ValueFormat a
+formattedByEnumUsingShow = formattedByEnumUsingBuilderMapping (TextBuilder.string . show)
+
+{-|
+Derive value format specification from the Enum instance and
+explicit mapping of values to their representations.
+-}
+formattedByEnumUsingBuilderMapping :: (Bounded a, Enum a) => (a -> TextBuilder.Builder) -> ValueFormat a
+formattedByEnumUsingBuilderMapping valueRepresentation = let
   values = enumFromTo minBound (asTypeOf maxBound (descriptionToA description))
   descriptionToA = undefined :: ValueFormat a -> a
-  description = EnumValueFormat (fmap (TextBuilder.string . show) values)
+  description = EnumValueFormat (fmap valueRepresentation values)
   in description
 
 {-|
