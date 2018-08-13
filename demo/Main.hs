@@ -3,6 +3,7 @@ module Main where
 import Prelude
 import qualified Optima
 import qualified Attoparsec.Data as Attoparsec
+import qualified Data.Text as Text
 
 
 main = parseOpts >>= print where
@@ -29,7 +30,8 @@ main = parseOpts >>= print where
             Optima.member "e" textParam,
             Optima.subgroup "subgroup" (asum [
                 Optima.member "f" textParam,
-                Optima.member "g" (flag $> "slkdfjsdkj")
+                Optima.member "g" (flag $> "slkdfjsdkj"),
+                Text.concat <$> some (Optima.member "h" textParam)
               ])
             ])))
     where

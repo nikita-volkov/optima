@@ -93,6 +93,8 @@ instance Applicative ParamGroup where
 instance Alternative ParamGroup where
   empty = ParamGroup (\ _ -> empty)
   (<|>) (ParamGroup left) (ParamGroup right) = ParamGroup (\ prefix -> left prefix <|> right prefix)
+  many (ParamGroup parser) = ParamGroup (\ prefix -> many (parser prefix))
+  some (ParamGroup parser) = ParamGroup (\ prefix -> some (parser prefix))
 
 deriving instance Functor Param
 
