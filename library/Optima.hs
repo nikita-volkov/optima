@@ -5,6 +5,10 @@ module Optima
   -- * Params
   Params,
   param,
+  paramGroup,
+  -- * ParamGroup
+  ParamGroup,
+  member,
   -- * Param
   Param,
   value,
@@ -51,9 +55,12 @@ Includes the description of the parameter.
 newtype Param a = Param (Maybe Char -> Text -> Optparse.Parser a)
 
 {-|
-Parameter product, which gets resolved by prefixing the names
+Parameter group, which gets resolved by prefixing the names.
+
+Should be used to define parameters, which only make sense in combination.
+E.g., a server config can be defined by providing port and host together.
 -}
-newtype ProductParam a = ProductParam (Text -> Optparse.Parser a)
+newtype ParamGroup a = ParamGroup (Text -> Optparse.Parser a)
 
 {-|
 Parameter value parser.
@@ -77,6 +84,14 @@ data ValueFormat a = EnumValueFormat [TextBuilder.Builder] | UnspecifiedFormat
 deriving instance Functor Params
 deriving instance Applicative Params
 deriving instance Alternative Params
+
+deriving instance Functor ParamGroup
+instance Applicative ParamGroup where
+  pure x = ParamGroup (\ _ -> pure x)
+  (<*>) (ParamGroup left) (ParamGroup right) = ParamGroup (\ prefix -> left prefix <*> right prefix)
+instance Alternative ParamGroup where
+  empty = ParamGroup (\ _ -> empty)
+  (<|>) (ParamGroup left) (ParamGroup right) = ParamGroup (\ prefix -> left prefix <|> right prefix)
 
 deriving instance Functor Param
 
@@ -109,7 +124,7 @@ params description (Params parser) =
     mods = Optparse.fullDesc <> Optparse.progDesc (Text.unpack description)
 
 
--- ** Param
+-- ** Params
 -------------------------
 
 {-|
@@ -117,6 +132,27 @@ Lift a single parameter parser.
 -}
 param :: Maybe Char {-^ Single-char name -} -> Text {-^ Long name -} -> Param a -> Params a
 param shortName longName (Param parser) = Params (parser shortName longName)
+
+{-|
+Lift a parameter group parser.
+
+The param group cannot use short names, only long names.
+-}
+paramGroup :: Text {-^ Prefix for the long names of the parameters. If empty, then there'll be no prefixing -} -> ParamGroup a -> Params a
+paramGroup prefix (ParamGroup parser) = Params (parser prefix)
+
+
+-- ** ParamGroup
+-------------------------
+
+{-|
+Lift a param parser into parameter group.
+-}
+member :: Text {-^ Long name of the parameter -} -> Param a -> ParamGroup a
+member name (Param parser) = ParamGroup (\ prefix -> parser Nothing (prefixIfPossible prefix name)) where
+  prefixIfPossible prefix text = if Text.null prefix
+    then text
+    else prefix <> "-" <> text
 
 
 -- ** Param
