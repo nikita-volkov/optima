@@ -5,16 +5,15 @@ module Optima
   -- * Params
   Params,
   param,
-  paramGroup,
+  group,
   -- * ParamGroup
   ParamGroup,
   member,
-  memberGroup,
+  subgroup,
   -- * Param
   Param,
   value,
   flag,
-  switch,
   -- * Value
   Value,
   explicitlyParsed,
@@ -32,7 +31,7 @@ module Optima
 )
 where
 
-import Optima.Prelude
+import Optima.Prelude hiding (group)
 import qualified Data.Text as Text
 import qualified Data.Attoparsec.Text as Attoparsec
 import qualified Options.Applicative as Optparse
@@ -140,8 +139,8 @@ Lift a parameter group parser.
 
 The param group cannot use short names, only long names.
 -}
-paramGroup :: Text {-^ Prefix for the long names of the parameters. If empty, then there'll be no prefixing -} -> ParamGroup a -> Params a
-paramGroup prefix (ParamGroup parser) = Params (parser prefix)
+group :: Text {-^ Prefix for the long names of the parameters. If empty, then there'll be no prefixing -} -> ParamGroup a -> Params a
+group prefix (ParamGroup parser) = Params (parser prefix)
 
 
 -- ** ParamGroup
@@ -156,8 +155,8 @@ member name (Param parser) = ParamGroup (\ prefix -> parser Nothing (prefixIfMak
 {-|
 Unite a group by a shared prefix.
 -}
-memberGroup :: Text {-^ Long name prefix -} -> ParamGroup a -> ParamGroup a
-memberGroup prefix (ParamGroup parser) = ParamGroup (\ higherPrefix -> parser (prefixIfMakesSense higherPrefix prefix))
+subgroup :: Text {-^ Long name prefix -} -> ParamGroup a -> ParamGroup a
+subgroup prefix (ParamGroup parser) = ParamGroup (\ higherPrefix -> parser (prefixIfMakesSense higherPrefix prefix))
 
 
 -- ** Param
@@ -185,15 +184,6 @@ flag :: Text {-^ Description. Can be empty -} -> Param ()
 flag description =
   Param (\ shortName longName ->
     Optparse.flag' ()
-      (longParamName longName <> foldMap Optparse.short shortName <> paramHelp description UnspecifiedFormat))
-
-{-|
-A parameter with no value, the presence of which is interpreted as 'True'.
--}
-switch :: Text {-^ Description. Can be empty -} -> Param Bool
-switch description =
-  Param (\ shortName longName ->
-    Optparse.switch
       (longParamName longName <> foldMap Optparse.short shortName <> paramHelp description UnspecifiedFormat))
 
 
