@@ -1,5 +1,5 @@
 name: optima
-version: 0.2
+version: 0.3
 category: CLI, Parsing, Options
 synopsis: Simple command line interface arguments parser
 homepage: https://github.com/metrix-ai/optima
