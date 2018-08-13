@@ -9,6 +9,7 @@ module Optima
   -- * ParamGroup
   ParamGroup,
   member,
+  prefixedGroup,
   -- * Param
   Param,
   value,
@@ -150,10 +151,13 @@ paramGroup prefix (ParamGroup parser) = Params (parser prefix)
 Lift a param parser into parameter group.
 -}
 member :: Text {-^ Long name of the parameter -} -> Param a -> ParamGroup a
-member name (Param parser) = ParamGroup (\ prefix -> parser Nothing (prefixIfPossible prefix name)) where
-  prefixIfPossible prefix text = if Text.null prefix
-    then text
-    else prefix <> "-" <> text
+member name (Param parser) = ParamGroup (\ prefix -> parser Nothing (prefixIfMakesSense prefix name)) where
+
+{-|
+Unite a group by a shared prefix.
+-}
+prefixedGroup :: Text {-^ Long name prefix -} -> ParamGroup a -> ParamGroup a
+prefixedGroup prefix (ParamGroup parser) = ParamGroup (\ higherPrefix -> parser (prefixIfMakesSense higherPrefix prefix))
 
 
 -- ** Param
@@ -287,6 +291,11 @@ buildHelp description valueFormat =
 
 renderIfNotEmpty :: TextBuilder.Builder -> Maybe Text
 renderIfNotEmpty = fmap TextBuilder.run . validate (not . TextBuilder.null)
+
+prefixIfMakesSense :: Text -> Text -> Text
+prefixIfMakesSense prefix text = if Text.null prefix
+  then text
+  else prefix <> "-" <> text
 
 
 -- ** Mods
