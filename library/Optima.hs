@@ -5,11 +5,11 @@ module Optima
   -- * Params
   Params,
   param,
-  prefixedParams,
-  -- * PrefixedParams
-  PrefixedParams,
+  paramGroup,
+  -- * ParamGroup
+  ParamGroup,
+  member,
   prefixed,
-  prefixedAgain,
   -- * Param
   Param,
   value,
@@ -62,7 +62,7 @@ Parameter group, which gets identified by prefixing the names.
 Should be used to define parameters, which only make sense in combination.
 E.g., a server config can be defined by providing port and host together.
 -}
-newtype PrefixedParams a = PrefixedParams (Text -> Optparse.Parser a)
+newtype ParamGroup a = ParamGroup (Text -> Optparse.Parser a)
 
 {-|
 Parameter value parser.
@@ -87,13 +87,13 @@ deriving instance Functor Params
 deriving instance Applicative Params
 deriving instance Alternative Params
 
-deriving instance Functor PrefixedParams
-instance Applicative PrefixedParams where
-  pure x = PrefixedParams (\ _ -> pure x)
-  (<*>) (PrefixedParams left) (PrefixedParams right) = PrefixedParams (\ prefix -> left prefix <*> right prefix)
-instance Alternative PrefixedParams where
-  empty = PrefixedParams (\ _ -> empty)
-  (<|>) (PrefixedParams left) (PrefixedParams right) = PrefixedParams (\ prefix -> left prefix <|> right prefix)
+deriving instance Functor ParamGroup
+instance Applicative ParamGroup where
+  pure x = ParamGroup (\ _ -> pure x)
+  (<*>) (ParamGroup left) (ParamGroup right) = ParamGroup (\ prefix -> left prefix <*> right prefix)
+instance Alternative ParamGroup where
+  empty = ParamGroup (\ _ -> empty)
+  (<|>) (ParamGroup left) (ParamGroup right) = ParamGroup (\ prefix -> left prefix <|> right prefix)
 
 deriving instance Functor Param
 
@@ -140,24 +140,24 @@ Lift a parameter group parser.
 
 The param group cannot use short names, only long names.
 -}
-prefixedParams :: Text {-^ Prefix for the long names of the parameters. If empty, then there'll be no prefixing -} -> PrefixedParams a -> Params a
-prefixedParams prefix (PrefixedParams parser) = Params (parser prefix)
+paramGroup :: Text {-^ Prefix for the long names of the parameters. If empty, then there'll be no prefixing -} -> ParamGroup a -> Params a
+paramGroup prefix (ParamGroup parser) = Params (parser prefix)
 
 
--- ** PrefixedParams
+-- ** ParamGroup
 -------------------------
 
 {-|
 Lift a param parser into parameter group.
 -}
-prefixed :: Text {-^ Long name of the parameter -} -> Param a -> PrefixedParams a
-prefixed name (Param parser) = PrefixedParams (\ prefix -> parser Nothing (prefixIfMakesSense prefix name)) where
+member :: Text {-^ Long name of the parameter -} -> Param a -> ParamGroup a
+member name (Param parser) = ParamGroup (\ prefix -> parser Nothing (prefixIfMakesSense prefix name)) where
 
 {-|
 Unite a group by a shared prefix.
 -}
-prefixedAgain :: Text {-^ Long name prefix -} -> PrefixedParams a -> PrefixedParams a
-prefixedAgain prefix (PrefixedParams parser) = PrefixedParams (\ higherPrefix -> parser (prefixIfMakesSense higherPrefix prefix))
+prefixed :: Text {-^ Long name prefix -} -> ParamGroup a -> ParamGroup a
+prefixed prefix (ParamGroup parser) = ParamGroup (\ higherPrefix -> parser (prefixIfMakesSense higherPrefix prefix))
 
 
 -- ** Param
