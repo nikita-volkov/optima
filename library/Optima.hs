@@ -9,7 +9,7 @@ module Optima
   -- * ParamGroup
   ParamGroup,
   member,
-  prefixed,
+  memberGroup,
   -- * Param
   Param,
   value,
@@ -156,8 +156,8 @@ member name (Param parser) = ParamGroup (\ prefix -> parser Nothing (prefixIfMak
 {-|
 Unite a group by a shared prefix.
 -}
-prefixed :: Text {-^ Long name prefix -} -> ParamGroup a -> ParamGroup a
-prefixed prefix (ParamGroup parser) = ParamGroup (\ higherPrefix -> parser (prefixIfMakesSense higherPrefix prefix))
+memberGroup :: Text {-^ Long name prefix -} -> ParamGroup a -> ParamGroup a
+memberGroup prefix (ParamGroup parser) = ParamGroup (\ higherPrefix -> parser (prefixIfMakesSense higherPrefix prefix))
 
 
 -- ** Param
