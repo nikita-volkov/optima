@@ -8,6 +8,7 @@ module Optima
   -- * Param
   Param,
   value,
+  switch,
   -- * Value
   Value,
   explicitlyParsed,
@@ -133,6 +134,15 @@ value description def format (Value attoparsecParser) =
       foldMap Optparse.short shortName <>
       paramHelp description format <>
       defaultValue def
+
+{-|
+A parameter with no value, the presence of which is interpreted as 'True'.
+-}
+switch :: Text {-^ Description. Can be empty -} -> Param Bool
+switch description =
+  Param (\ shortName longName ->
+    Optparse.switch
+      (longParamName longName <> foldMap Optparse.short shortName <> paramHelp description UnspecifiedFormat))
 
 
 -- ** Value
