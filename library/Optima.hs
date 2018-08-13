@@ -8,6 +8,7 @@ module Optima
   -- * Param
   Param,
   value,
+  flag,
   switch,
   -- * Value
   Value,
@@ -134,6 +135,16 @@ value description def format (Value attoparsecParser) =
       foldMap Optparse.short shortName <>
       paramHelp description format <>
       defaultValue def
+
+{-|
+A parameter with no value. Fails if it's not present.
+Thus it can be composed using Alternative.
+-}
+flag :: Text {-^ Description. Can be empty -} -> Param ()
+flag description =
+  Param (\ shortName longName ->
+    Optparse.flag' ()
+      (longParamName longName <> foldMap Optparse.short shortName <> paramHelp description UnspecifiedFormat))
 
 {-|
 A parameter with no value, the presence of which is interpreted as 'True'.
