@@ -178,6 +178,8 @@ value description def format (Value attoparsecParser) =
       paramHelp description format <>
       defaultValue def
 
+-- enumValue :: Text -> Default a -> (a -> Text) -> Attoparsec.Parser a -> Param a
+
 {-|
 A parameter with no value. Fails if it's not present.
 Thus it can be composed using Alternative.
