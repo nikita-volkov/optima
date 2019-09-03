@@ -211,8 +211,8 @@ implicitlyParsed = Value Attoparsec.lenientParser
 {-|
 Provide a default value with explicit textual representation.
 -}
-explicitlyRepresented :: a -> Text -> Default a
-explicitlyRepresented value representation = SpecifiedDefault value representation
+explicitlyRepresented :: (a -> Text) -> a -> Default a
+explicitlyRepresented render value = SpecifiedDefault value (render value)
 
 {-|
 Provide a default value with textual representation formed using the implicit Show instance.
