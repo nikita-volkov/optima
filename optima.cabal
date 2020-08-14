@@ -24,7 +24,7 @@ library
     attoparsec ==0.13.*,
     attoparsec-data ==1.*,
     base >=4.9 && <5,
-    optparse-applicative >=0.15 && <0.16,
+    optparse-applicative >=0.15 && <0.17,
     text ==1.*,
     text-builder >=0.6 && <0.7
 
