@@ -1,5 +1,5 @@
 name: optima
-version: 0.4.0.1
+version: 0.4.0.2
 category: CLI, Parsing, Options
 synopsis: Simple command line interface arguments parser
 homepage: https://github.com/metrix-ai/optima
@@ -21,7 +21,7 @@ library
   other-modules:
     Optima.Prelude
   build-depends:
-    attoparsec ==0.13.*,
+    attoparsec >=0.13 && <0.15,
     attoparsec-data ==1.*,
     base >=4.9 && <5,
     optparse-applicative >=0.15 && <0.17,
