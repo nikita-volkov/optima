@@ -73,6 +73,9 @@ import Unsafe.Coerce as Exports
 -------------------------
 import Data.Text as Exports (Text)
 
+-- text-builder
+-------------------------
+import TextBuilder as Exports (TextBuilder, buildText)
 
 validate :: Alternative m => (a -> Bool) -> a -> m a
 validate predicate value = if predicate value
