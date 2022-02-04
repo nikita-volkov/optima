@@ -22,10 +22,10 @@ library
     Optima.Prelude
   build-depends:
     attoparsec >=0.13 && <0.15,
-    attoparsec-data ==1.*,
+    attoparsec-data >=1.0.5.2 && <1.1,
     base >=4.9 && <5,
-    optparse-applicative >=0.15 && <0.17,
-    text ==1.*,
+    optparse-applicative >=0.15 && <0.18,
+    text >=1.2 && <3,
     text-builder >=0.6 && <0.7
 
 test-suite demo
