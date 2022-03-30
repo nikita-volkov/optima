@@ -3,17 +3,10 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: optparse-applicative-0.17.0.0@sha256:0713e54cbb341e5cae979e2ac441eb3a5ff42e303001f432bd58c19e5638bdda,4967
-    pantry-tree:
-      size: 3124
-      sha256: 3b4398845ee6718fe2303870a5ab75bd190eb712fed2f22caaae30f790c490fd
-  original:
-    hackage: optparse-applicative-0.17.0.0
+packages: []
 snapshots:
 - completed:
-    size: 631483
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2022/1/27.yaml
-    sha256: 9fd3a84e21a00cbd62abe0cfd8e3620d8014272d27b9357dfe27704270d49624
-  original: nightly-2022-01-27
+    size: 539378
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2022/3/30.yaml
+    sha256: 745431a4c5b78cc93d81e99b2253a1e0eacd4f94e00cf17dab7cc14e665332e3
+  original: nightly-2022-03-30
