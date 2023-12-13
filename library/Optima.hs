@@ -221,7 +221,7 @@ explicitlyParsed = Value
 
 -- |
 -- Lift an implicit lenient Attoparsec parser into value parser.
-implicitlyParsed :: Attoparsec.LenientParser a => Value a
+implicitlyParsed :: (Attoparsec.LenientParser a) => Value a
 implicitlyParsed = Value Attoparsec.lenientParser
 
 -- ** Default
@@ -233,7 +233,7 @@ explicitlyRepresented render value = SpecifiedDefault value (render value)
 
 -- |
 -- Provide a default value with textual representation formed using the implicit Show instance.
-showable :: Show a => a -> Default a
+showable :: (Show a) => a -> Default a
 showable a = SpecifiedDefault a (Text.pack (show a))
 
 -- |
@@ -302,11 +302,11 @@ paramHelp :: Text -> ValueFormat a -> Optparse.Mod f a
 paramHelp description format =
   foldMap (Optparse.help . Text.unpack) (renderIfNotEmpty (buildHelp description format))
 
-defaultValue :: Optparse.HasValue f => Default a -> Optparse.Mod f a
+defaultValue :: (Optparse.HasValue f) => Default a -> Optparse.Mod f a
 defaultValue = \case
   SpecifiedDefault a text -> Optparse.value a <> Optparse.showDefaultWith (const (Text.unpack text))
   UnspecifiedDefault -> mempty
 
-longParamName :: Optparse.HasName f => Text -> Optparse.Mod f a
+longParamName :: (Optparse.HasName f) => Text -> Optparse.Mod f a
 longParamName name =
   maybe mempty (Optparse.long . Text.unpack) (validate (not . Text.null) name)
