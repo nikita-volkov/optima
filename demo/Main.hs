@@ -6,7 +6,7 @@ import qualified Optima
 import Prelude
 
 main :: IO ()
-main = parseOpts >>= print
+main = try @SomeException parseOpts >>= print
   where
     parseOpts =
       Optima.params
