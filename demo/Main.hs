@@ -5,7 +5,8 @@ import qualified Data.Text as Text
 import qualified Optima
 import Prelude
 
-main = parseOpts >>= print
+main :: IO ()
+main = try @SomeException parseOpts >>= print
   where
     parseOpts =
       Optima.params
@@ -57,4 +58,3 @@ main = parseOpts >>= print
       where
         textParam = Optima.value "Text param" Optima.defaultless Optima.unformatted (Optima.explicitlyParsed Attoparsec.text)
         flag = Optima.flag "Flag type 1"
-        bytesParam = Optima.value "" Optima.defaultless Optima.unformatted (Optima.explicitlyParsed Attoparsec.utf8Bytes)
