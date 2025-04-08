@@ -41,7 +41,7 @@ import qualified Data.Attoparsec.Text as Attoparsec
 import qualified Data.Text as Text
 import Optima.Prelude hiding (group)
 import qualified Options.Applicative as Optparse
-import qualified Text.Builder as TextBuilder
+import qualified TextBuilder
 
 -- * Types
 
@@ -73,7 +73,7 @@ data Default a = SpecifiedDefault a Text | UnspecifiedDefault
 
 -- |
 -- Parameter description.
-data ValueFormat a = EnumValueFormat [TextBuilder.Builder] | UnspecifiedFormat
+data ValueFormat a = EnumValueFormat [TextBuilder.TextBuilder] | UnspecifiedFormat
 
 -- * Instances
 
@@ -257,7 +257,7 @@ formattedByEnumUsingShow = formattedByEnumUsingBuilderMapping (TextBuilder.strin
 -- |
 -- Derive value format specification from the Enum instance and
 -- explicit mapping of values to their representations.
-formattedByEnumUsingBuilderMapping :: (Bounded a, Enum a) => (a -> TextBuilder.Builder) -> ValueFormat a
+formattedByEnumUsingBuilderMapping :: (Bounded a, Enum a) => (a -> TextBuilder.TextBuilder) -> ValueFormat a
 formattedByEnumUsingBuilderMapping valueRepresentation =
   let values = enumFromTo minBound (asTypeOf maxBound (descriptionToA description))
       descriptionToA = undefined :: ValueFormat a -> a
@@ -271,24 +271,24 @@ unformatted = UnspecifiedFormat
 
 -- ** Rendering building
 
-buildValueFormat :: ValueFormat a -> TextBuilder.Builder
+buildValueFormat :: ValueFormat a -> TextBuilder.TextBuilder
 buildValueFormat = \case
   EnumValueFormat values -> "(" <> TextBuilder.intercalate ", " values <> ")"
   UnspecifiedFormat -> mempty
 
-buildHelp :: Text -> ValueFormat a -> TextBuilder.Builder
+buildHelp :: Text -> ValueFormat a -> TextBuilder.TextBuilder
 buildHelp description valueFormat =
   TextBuilder.intercalate
     (TextBuilder.char ' ')
     (notNull (TextBuilder.text description) <> notNull (buildValueFormat valueFormat))
   where
-    notNull :: TextBuilder.Builder -> [TextBuilder.Builder]
-    notNull = validate (not . TextBuilder.null)
+    notNull :: TextBuilder.TextBuilder -> [TextBuilder.TextBuilder]
+    notNull = validate (not . TextBuilder.isEmpty)
 
 -- ** Rendering
 
-renderIfNotEmpty :: TextBuilder.Builder -> Maybe Text
-renderIfNotEmpty = fmap TextBuilder.run . validate (not . TextBuilder.null)
+renderIfNotEmpty :: TextBuilder.TextBuilder -> Maybe Text
+renderIfNotEmpty = fmap TextBuilder.toText . validate (not . TextBuilder.isEmpty)
 
 prefixIfMakesSense :: Text -> Text -> Text
 prefixIfMakesSense prefix text =
