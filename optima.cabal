@@ -1,6 +1,6 @@
 cabal-version: 3.0
 name: optima
-version: 0.4.0.6
+version: 0.4.0.7
 category: CLI, Parsing, Options
 synopsis: Simple command line interface arguments parser
 homepage: https://github.com/metrix-ai/optima
@@ -70,7 +70,7 @@ library
     attoparsec >=0.13 && <0.15,
     attoparsec-data >=1.0.5.2 && <1.1,
     base >=4.9 && <5,
-    optparse-applicative >=0.15 && <0.19,
+    optparse-applicative >=0.15 && <0.20,
     text >=1.2 && <3,
     text-builder ^>=1,
 
